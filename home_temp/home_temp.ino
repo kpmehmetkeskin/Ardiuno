@@ -1,19 +1,19 @@
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
 
-#define ag_ismi "JAVA_HOME"
-#define ag_sifresi "avcz3463"
-#define IP "184.106.153.149"
+#define echoPin 6
+#define trigPin 7
 
-#define DHTPIN 7
-#define DHTTYPE DHT22
-  DHT dht(DHTPIN, DHTTYPE);
-  float sicaklik;
+#define ag_ismi "JAVA_HOME"
+#define ag_sifresi "zxc*123456"
+#define IP "184.106.153.149"
   
   void setup()
   {
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    
     Serial.begin(115200);
-    dht.begin();
     Serial.println("AT");
     delay(1000); 
     analogReference(INTERNAL);
@@ -26,11 +26,24 @@
   }
  
   void loop(){
-    float sicaklik = dht.readTemperature();
-    Serial.println(sicaklik);
-    sicaklik_yolla(sicaklik);
-    delay(60000);
+    mesafe();
+    delay(6000);
   }
+
+  void mesafe(){
+  long duration, distance;
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration / 58.2;
+  delay(50);
+  Serial.println(distance);
+
+  sicaklik_yolla(distance); 
+}
    
   void sicaklik_yolla(float sicaklik){
     Serial.println(String("AT+CIPSTART=\"TCP\",\"") + IP + "\",80");
